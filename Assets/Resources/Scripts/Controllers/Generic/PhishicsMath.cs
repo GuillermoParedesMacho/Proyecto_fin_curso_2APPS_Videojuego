@@ -19,4 +19,9 @@ public class PhishicsMath{
     public static float degreSToNewtows(float degreS, float mass, float time) {
         return degreS * mass * time;
     }
+
+    public static float distanceTraveled(Vector3 speed, float time) {
+        float linearSpeed = Mathf.Sqrt(Mathf.Pow(speed.x,2) + Mathf.Pow(speed.y, 2) + Mathf.Pow(speed.z, 2));
+        return linearSpeed * time * 1.2f;
+    }
 }

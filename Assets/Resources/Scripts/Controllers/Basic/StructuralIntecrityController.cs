@@ -32,15 +32,19 @@ public class StructuralIntecrityController : MonoBehaviour{
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
-    public void damage(float damageHitpoints, float armourPiercing) {
+    public void damage(float damageHitpoints, float armourPiercing, GameObject hitter) {
         //Math the armour piercing vs armour and remove heal properly
         if (damageHitpoints < 0) { damageHitpoints *= -1; }
         var armourPiercingFactor = armourPiercing / armour;
         if(armourPiercingFactor > maxArmourPiercingFactor) { armourPiercingFactor = maxArmourPiercingFactor; }
-        heal -= damageHitpoints * armourPiercingFactor;
+        float damage = damageHitpoints * armourPiercingFactor;
+        heal -= damage;
 
         //update heal data
         healUpdate();
+
+        //report
+        Debug.Log(hitter.name + " hitted " + gameObject.name + " dealing " + damage + " damage");
     }
 
     public void healUpdate() {
