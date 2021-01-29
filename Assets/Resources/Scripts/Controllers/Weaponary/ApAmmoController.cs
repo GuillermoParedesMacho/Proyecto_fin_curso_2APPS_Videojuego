@@ -59,9 +59,10 @@ public class ApAmmoController : MonoBehaviour {
                 StructuralIntecrityController siController = hitted.GetComponent<StructuralIntecrityController>();
                 if (siController != null) {
                     siController.damage(damage, ap, launcher);
-                    moveToProperHitpoint(direction, distance);
-                    hit = true;
+                    //moveToProperHitpoint(direction, distance);
+                    
                 }
+                hit = true;
             }
         }
     }
