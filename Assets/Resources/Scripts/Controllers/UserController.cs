@@ -21,6 +21,7 @@ public class UserController : MonoBehaviour {
     
     void Update() {
         moveCamera();
+        movementSystem();
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
@@ -36,5 +37,21 @@ public class UserController : MonoBehaviour {
         pos += transform.up * offset.y;
         pos += transform.right * offset.x;
         transform.position = pos;
+    }
+
+    private void movementSystem() {
+        Vector3 rotation = new Vector3(
+            Input.GetAxis("Pitch") - Input.GetAxis("MouseY"),
+            Input.GetAxis("Yaw") + Input.GetAxis("MouseX"),
+            Input.GetAxis("Roll")
+            );
+        fController.rotation = rotation;
+        Vector3 movement = new Vector3(
+            Input.GetAxis("strafeX"),
+            Input.GetAxis("strafeY"),
+            fController.movement.z
+            );
+        fController.movement = movement;
+        fController.propIncrease(Input.GetAxis("Acceleration"));
     }
 }

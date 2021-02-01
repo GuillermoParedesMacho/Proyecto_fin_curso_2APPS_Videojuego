@@ -162,6 +162,7 @@ MonoBehaviour:
   movement: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
   fire: 0
+  accelerationScale: 0
 --- !u!114 &447144310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,16 +574,16 @@ MonoBehaviour:
   inPitch: 0
   inRoll: 0
   inYaw: 0
-  pitchAcel: 2
-  rollAcel: 1
-  yawAcel: 1
+  pitchAcel: 200
+  rollAcel: 150
+  yawAcel: 100
   inFowardBackwards: 0
   inLeftRight: 0
   inUpDown: 0
-  fowardAcel: 30
-  backwardsAcel: 30
-  leftRighAcel: 30
-  upDownDownAcel: 30
+  fowardAcel: 300
+  backwardsAcel: 300
+  leftRighAcel: 300
+  upDownDownAcel: 300
 --- !u!65 &953233364
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -669,8 +670,8 @@ Rigidbody:
   m_GameObject: {fileID: 953233362}
   serializedVersion: 2
   m_Mass: 1000
-  m_Drag: 0.5
-  m_AngularDrag: 0.5
+  m_Drag: 1
+  m_AngularDrag: 1
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -721,6 +722,7 @@ MonoBehaviour:
   movement: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
   fire: 0
+  accelerationScale: 1
 --- !u!1 &1147676712
 GameObject:
   m_ObjectHideFlags: 0

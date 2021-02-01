@@ -14,6 +14,7 @@ public class FighterController : MonoBehaviour {
     public Vector3 movement;
     public Vector3 rotation;
     public bool fire;
+    public float accelerationScale;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
     void Start() {
@@ -36,4 +37,9 @@ public class FighterController : MonoBehaviour {
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
+    public void propIncrease(float increase) {
+        if (increase > 1) { increase = 1; }
+        else if (increase < -1) { increase = -1; }
+        movement.z += increase * accelerationScale * Time.deltaTime;
+    }
 }
