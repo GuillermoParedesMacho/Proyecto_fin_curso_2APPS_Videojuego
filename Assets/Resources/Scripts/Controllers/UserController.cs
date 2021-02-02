@@ -53,5 +53,11 @@ public class UserController : MonoBehaviour {
             );
         fController.movement = movement;
         fController.propIncrease(Input.GetAxis("Acceleration"));
+
+        if(Input.GetAxis("FireCannon") == 1) { fController.fire = true; }
+        else { fController.fire = false;
+            Debug.Log(Input.GetAxis("FireCannon"));
+        }
+        
     }
 }
