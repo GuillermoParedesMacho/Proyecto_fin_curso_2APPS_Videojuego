@@ -25,7 +25,7 @@ public class FighterController : MonoBehaviour {
     
     void Update(){
         if (sIC.alive) {
-            sMC.inFowardBackwards = movement.z;
+            sMC.inFowardBackwards += movement.z * accelerationScale * Time.deltaTime;
             sMC.inLeftRight = movement.x;
             sMC.inUpDown = movement.y;
             sMC.inPitch = rotation.x;
@@ -40,6 +40,6 @@ public class FighterController : MonoBehaviour {
     public void propIncrease(float increase) {
         if (increase > 1) { increase = 1; }
         else if (increase < -1) { increase = -1; }
-        movement.z += increase * accelerationScale * Time.deltaTime;
+        movement.z += increase;
     }
 }

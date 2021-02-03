@@ -8,12 +8,13 @@ public class CannonController : MonoBehaviour {
     //Constants
     public GameObject ammoSample;
     public float fireRateRPM;
-    public Vector3 location;
+    public Vector3[] location;
     private float forceInNewtowns;
 
     //Values
     private GameObject[] ammo;
     private int nextToShoot;
+    private int nextLocation;
     private float timeBtwShoots;
     private float timeForNextShoot;
 
@@ -22,6 +23,10 @@ public class CannonController : MonoBehaviour {
     private void Start(){
         createAmmo();
         timeBtwShoots = 60 / fireRateRPM;
+        nextLocation = 0;
+        if(location.Length == 0) {
+            location = new Vector3[] { Vector3.zero };
+        }
     }
 
     private void Update() {
@@ -53,8 +58,17 @@ public class CannonController : MonoBehaviour {
 
     private void launchBullet() {
         GameObject fire = ammo[nextToShoot];
+        setBulletPosition(fire);
+        fire.SetActive(true);
+    }
+
+    private void setBulletPosition(GameObject fire) {
         fire.transform.position = gameObject.transform.position;
         fire.transform.eulerAngles = gameObject.transform.eulerAngles;
-        fire.SetActive(true);
+        fire.transform.Translate(location[nextLocation]);
+        nextLocation++;
+        if(nextLocation >= location.Length) {
+            nextLocation = 0;
+        }
     }
 }

@@ -177,7 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ammoSample: {fileID: 1379353685}
   fireRateRPM: 600
-  location: {x: 0, y: 0, z: 0}
+  location: []
 --- !u!114 &447144311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -706,7 +706,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ammoSample: {fileID: 558802724}
   fireRateRPM: 600
-  location: {x: 0, y: 0, z: 0}
+  location:
+  - {x: 5, y: 5, z: 5}
+  - {x: -5, y: 5, z: 5}
+  - {x: -5, y: -5, z: 5}
+  - {x: 5, y: -5, z: 5}
 --- !u!114 &953233371
 MonoBehaviour:
   m_ObjectHideFlags: 0

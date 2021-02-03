@@ -77,21 +77,21 @@ public class ShipMovementController: MonoBehaviour {
 
     private void checkLimits(float limit) {
         //Limiting rotation
-        pitch = limitValue(inPitch, limit);
-        yaw = limitValue(inYaw, limit);
-        roll = limitValue(inRoll, limit);
+        inPitch = limitValue(inPitch, limit);
+        inYaw = limitValue(inYaw, limit);
+        inRoll = limitValue(inRoll, limit);
 
         //Limiting movement
-        fowardBackwards = limitValue(inFowardBackwards, limit);
-        leftRight = limitValue(inLeftRight, limit);
-        upDown = limitValue(inUpDown, limit);
+        inFowardBackwards = limitValue(inFowardBackwards, limit);
+        inLeftRight = limitValue(inLeftRight, limit);
+        inUpDown = limitValue(inUpDown, limit);
     }
 
     private void rotationVectorBuild() {
         //making of the math and creating the rotation vector
-        pitch = multiplyCorrect(pitch, pitchAcel, pitchAcel);
-        yaw = multiplyCorrect(yaw, yawAcel, yawAcel);
-        roll = multiplyCorrect(roll, rollAcel, rollAcel);
+        pitch = multiplyCorrect(inPitch, pitchAcel, pitchAcel);
+        yaw = multiplyCorrect(inYaw, yawAcel, yawAcel);
+        roll = multiplyCorrect(inRoll, rollAcel, rollAcel);
 
         //PhishicsMath.degreSToNewtows(roll, mass, time)
         rotationVector = Vector3.zero;
@@ -102,9 +102,9 @@ public class ShipMovementController: MonoBehaviour {
 
     private void movementVectorBuild() {
         //making the math and updating the movment vector
-        fowardBackwards = multiplyCorrect(fowardBackwards, fowardAcel, backwardsAcel);
-        leftRight *= leftRighAcel;
-        upDown *= upDownDownAcel;
+        fowardBackwards = multiplyCorrect(inFowardBackwards, fowardAcel, backwardsAcel);
+        leftRight = leftRighAcel * inLeftRight;
+        upDown = upDownDownAcel * inUpDown;
         
         //input(km/h) * world angle * interaction time * mass
         movementVector = Vector3.zero;

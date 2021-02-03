@@ -16,6 +16,8 @@ public class UserController : MonoBehaviour {
 
     void Start() {
         getcontroller();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     
@@ -49,15 +51,13 @@ public class UserController : MonoBehaviour {
         Vector3 movement = new Vector3(
             Input.GetAxis("strafeX"),
             Input.GetAxis("strafeY"),
-            fController.movement.z
+            Input.GetAxis("Acceleration")
             );
         fController.movement = movement;
-        fController.propIncrease(Input.GetAxis("Acceleration"));
+        //fController.propIncrease(Input.GetAxis("Acceleration"));
 
         if(Input.GetAxis("FireCannon") == 1) { fController.fire = true; }
-        else { fController.fire = false;
-            Debug.Log(Input.GetAxis("FireCannon"));
-        }
+        else { fController.fire = false; }
         
     }
 }
