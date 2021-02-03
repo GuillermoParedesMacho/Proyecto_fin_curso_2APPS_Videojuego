@@ -16,12 +16,21 @@ public class UserController : MonoBehaviour {
 
     void Start() {
         getcontroller();
+
+        //temporal
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     
     void Update() {
         moveCamera();
         movementSystem();
+
+        //temporal
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Application.Quit();
+        }
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
@@ -55,9 +64,7 @@ public class UserController : MonoBehaviour {
         fController.propIncrease(Input.GetAxis("Acceleration"));
 
         if(Input.GetAxis("FireCannon") == 1) { fController.fire = true; }
-        else { fController.fire = false;
-            Debug.Log(Input.GetAxis("FireCannon"));
-        }
+        else { fController.fire = false; }
         
     }
 }
