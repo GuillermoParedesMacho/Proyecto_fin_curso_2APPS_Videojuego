@@ -24,7 +24,7 @@ public class ApAmmoController : MonoBehaviour {
 
     private void Awake() {
         rBody = gameObject.GetComponent<Rigidbody>();
-        bulletSpeed = PhishicsMath.msToNewtowns(bulletSpeedMs, rBody.mass);
+        bulletSpeed = PhishicsMath.msToNewtowns(bulletSpeedMs, rBody.mass, 0);
         launcherRgbody = launcher.GetComponent<Rigidbody>();
     }
 

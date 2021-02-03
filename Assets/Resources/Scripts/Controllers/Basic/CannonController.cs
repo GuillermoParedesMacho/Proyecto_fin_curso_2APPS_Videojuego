@@ -10,6 +10,7 @@ public class CannonController : MonoBehaviour {
     public float fireRateRPM;
     public Vector3[] location;
     private float forceInNewtowns;
+    public float innacuary;
 
     //Values
     private GameObject[] ammo;
@@ -66,6 +67,12 @@ public class CannonController : MonoBehaviour {
         fire.transform.position = gameObject.transform.position;
         fire.transform.eulerAngles = gameObject.transform.eulerAngles;
         fire.transform.Translate(location[nextLocation]);
+        Vector3 desviation = new Vector3(
+            Random.Range(-innacuary, innacuary),
+            Random.Range(-innacuary, innacuary),
+            Random.Range(-innacuary, innacuary)
+        );
+        fire.transform.eulerAngles += desviation;
         nextLocation++;
         if(nextLocation >= location.Length) {
             nextLocation = 0;

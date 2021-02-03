@@ -95,9 +95,9 @@ public class ShipMovementController: MonoBehaviour {
 
         //PhishicsMath.degreSToNewtows(roll, mass, time)
         rotationVector = Vector3.zero;
-        rotationVector += transform.right * PhishicsMath.degreSToNewtows(pitch, mass, time);
-        rotationVector += transform.up * PhishicsMath.degreSToNewtows(yaw, mass, time);
-        rotationVector += transform.forward * PhishicsMath.degreSToNewtows(roll, mass, time);
+        rotationVector += transform.right * PhishicsMath.degreSToNewtows(pitch, mass, time, rigitBody.angularDrag);
+        rotationVector += transform.up * PhishicsMath.degreSToNewtows(yaw, mass, time, rigitBody.angularDrag);
+        rotationVector += transform.forward * PhishicsMath.degreSToNewtows(roll, mass, time, rigitBody.angularDrag);
     }
 
     private void movementVectorBuild() {
@@ -109,9 +109,9 @@ public class ShipMovementController: MonoBehaviour {
         //input(km/h) * world angle * interaction time * mass
         movementVector = Vector3.zero;
         
-        movementVector += transform.right * PhishicsMath.msToNewtowns(leftRight, time, mass);
-        movementVector += transform.up * PhishicsMath.msToNewtowns(upDown, time, mass);
-        movementVector += transform.forward * PhishicsMath.msToNewtowns(fowardBackwards, time, mass);
+        movementVector += transform.right * PhishicsMath.msToNewtowns(leftRight, mass, time, rigitBody.drag);
+        movementVector += transform.up * PhishicsMath.msToNewtowns(upDown, mass, time, rigitBody.drag);
+        movementVector += transform.forward * PhishicsMath.msToNewtowns(fowardBackwards, mass, time, rigitBody.drag);
     }
 
     private void applyAcelerationVectors() {
