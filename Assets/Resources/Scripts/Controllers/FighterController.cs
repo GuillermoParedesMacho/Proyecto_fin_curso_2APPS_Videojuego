@@ -11,9 +11,14 @@ public class FighterController : MonoBehaviour {
     private CannonController cannon;
 
     //Values
+    [HideInInspector]
     public Vector3 movement;
+    [HideInInspector]
     public Vector3 rotation;
+    [HideInInspector]
     public bool fire;
+    [Header("velocidad a la que aumenta o reduce la velocidad")]
+    [Min(0)]
     public float accelerationScale;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--

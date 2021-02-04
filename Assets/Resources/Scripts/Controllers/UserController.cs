@@ -8,9 +8,14 @@ public class UserController : MonoBehaviour {
     //Constants
 
     //Values
-    public GameObject ship;
+    [Header("menu de los ajustes")]
+    public GameObject menuDeOpciones;
+    [Header("el objeto nave que se usara")]
+    public GameObject nave;
+    [Header("posicion de la camara con respecto al centro del obj")]
+    public Vector3 posOffset;
+
     private FighterController fController;
-    public Vector3 offset;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
@@ -24,20 +29,21 @@ public class UserController : MonoBehaviour {
     void Update() {
         moveCamera();
         movementSystem();
+        if (Input.GetKeyDown(KeyCode.Escape)) { menuOpciones(); }
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     private void getcontroller() {
-        fController = ship.GetComponent<FighterController>();
+        fController = nave.GetComponent<FighterController>();
     }
 
     private void moveCamera() {
-        transform.eulerAngles = ship.transform.eulerAngles;
-        Vector3 pos = ship.transform.position;
-        pos += transform.forward * offset.z;
-        pos += transform.up * offset.y;
-        pos += transform.right * offset.x;
+        transform.eulerAngles = nave.transform.eulerAngles;
+        Vector3 pos = nave.transform.position;
+        pos += transform.forward * posOffset.z;
+        pos += transform.up * posOffset.y;
+        pos += transform.right * posOffset.x;
         transform.position = pos;
     }
 
@@ -54,10 +60,25 @@ public class UserController : MonoBehaviour {
             Input.GetAxis("Acceleration")
             );
         fController.movement = movement;
-        //fController.propIncrease(Input.GetAxis("Acceleration"));
+    }
 
-        if(Input.GetAxis("FireCannon") == 1) { fController.fire = true; }
+    private void fireSystem() {
+        if (Input.GetAxis("FireCannon") == 1) { fController.fire = true; }
         else { fController.fire = false; }
-        
+    }
+
+    private void menuOpciones() {
+        if (menuDeOpciones.active) {
+            menuDeOpciones.SetActive(false);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 1;
+        }
+        else {
+            menuDeOpciones.SetActive(true);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Time.timeScale = 0.2f;
+        }
     }
 }

@@ -6,11 +6,17 @@ public class CannonController : MonoBehaviour {
     //---data--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     //Constants
-    public GameObject ammoSample;
+    [Header("Datos de disparo")]
+    [Min(0)]
     public float fireRateRPM;
-    public Vector3[] location;
-    private float forceInNewtowns;
+    [Min(0)]
     public float innacuary;
+    public Vector3[] location;
+    [Space(5)]
+    [Header("aqui va el modelo de la vala a usar")]
+    public GameObject ammoSample;
+
+    private float forceInNewtowns;
 
     //Values
     private GameObject[] ammo;
@@ -42,6 +48,9 @@ public class CannonController : MonoBehaviour {
         ammo = new GameObject[ammoNeeded];
         for (int x = 0; x < ammoNeeded; x++) {
             ammo[x] = Instantiate(ammoSample);
+            if(ammo[x].GetComponent<ApAmmoController>() != null) {
+                ammo[x].GetComponent<ApAmmoController>().launcher = gameObject;
+            }
             ammo[x].SetActive(false);
         }
     }

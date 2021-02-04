@@ -6,7 +6,7 @@ public class StructuralIntecrityController : MonoBehaviour{
     //---data--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     //Constants
-
+    
     private float maxHeal;
     private float maxArmour;
     private float maxArmourPiercingFactor;

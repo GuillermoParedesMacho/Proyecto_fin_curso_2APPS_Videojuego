@@ -6,14 +6,20 @@ public class ApAmmoController : MonoBehaviour {
     //---data--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     //Constants
+    [Header("tiempo que tardara la vala en desaparecer")]
     public float lifeTime;
+    [Header("velocidad de la vala")]
     public float bulletSpeedMs;
-    private Rigidbody rBody;
-    private float bulletSpeed;
-    public GameObject launcher;
-    private Rigidbody launcherRgbody;
+    [Space(5)]
+    [Header("opciones sobre el daño que puede hacer la vala")]
     public float damage;
     public float ap;
+
+    [HideInInspector]
+    public GameObject launcher;
+    private float bulletSpeed;
+    private Rigidbody rBody;
+    private Rigidbody launcherRgbody;
 
     //Values
     private float timeOfLife;

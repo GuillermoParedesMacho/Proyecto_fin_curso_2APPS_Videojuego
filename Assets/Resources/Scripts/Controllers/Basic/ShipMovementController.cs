@@ -22,6 +22,7 @@ public class ShipMovementController: MonoBehaviour {
     private Vector3 rotationVector;
     [Space(5)]
     [Min(0)]
+    [Header("Aceleracion rotacion unidades/s")]
     public float pitchAcel;
     [Min(0)]
     public float rollAcel;
@@ -40,7 +41,7 @@ public class ShipMovementController: MonoBehaviour {
     private Vector3 movementVector;
     [Space(5)]
     [Min(0)]
-    [Header("Aceleracion m/s")]
+    [Header("Aceleracion velocidad m/s")]
     public float fowardAcel;
     [Min(0)]
     public float backwardsAcel;
@@ -70,6 +71,7 @@ public class ShipMovementController: MonoBehaviour {
         rotationVectorBuild();
         movementVectorBuild();
         applyAcelerationVectors();
+        Debug.Log(rigitBody.angularVelocity);
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
@@ -94,10 +96,11 @@ public class ShipMovementController: MonoBehaviour {
         roll = multiplyCorrect(inRoll, rollAcel, rollAcel);
 
         //PhishicsMath.degreSToNewtows(roll, mass, time)
+        //valorar la opcion de anadir un valor de escalada
         rotationVector = Vector3.zero;
         rotationVector += transform.right * PhishicsMath.degreSToNewtows(pitch, mass, time, rigitBody.angularDrag);
         rotationVector += transform.up * PhishicsMath.degreSToNewtows(yaw, mass, time, rigitBody.angularDrag);
-        rotationVector += transform.forward * PhishicsMath.degreSToNewtows(roll, mass, time, rigitBody.angularDrag);
+        rotationVector += transform.forward * PhishicsMath.degreSToNewtows(roll, mass, time, rigitBody.angularDrag) * 0.25f;
     }
 
     private void movementVectorBuild() {
