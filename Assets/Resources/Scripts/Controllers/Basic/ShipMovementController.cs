@@ -71,7 +71,6 @@ public class ShipMovementController: MonoBehaviour {
         rotationVectorBuild();
         movementVectorBuild();
         applyAcelerationVectors();
-        Debug.Log(rigitBody.angularVelocity);
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
