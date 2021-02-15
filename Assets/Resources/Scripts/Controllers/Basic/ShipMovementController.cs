@@ -61,11 +61,6 @@ public class ShipMovementController: MonoBehaviour {
     }
 
     private void Update() {
-        main();
-    }
-
-    public void main() {
-        //must be called to make the ship move
         time = Time.deltaTime;
         checkLimits(1);
         rotationVectorBuild();

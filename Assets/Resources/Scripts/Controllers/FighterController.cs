@@ -12,6 +12,8 @@ public class FighterController : MonoBehaviour {
 
     //Values
     [HideInInspector]
+    public float fowardRSpeed;
+    [HideInInspector]
     public Vector3 movement;
     [HideInInspector]
     public Vector3 rotation;
@@ -20,16 +22,19 @@ public class FighterController : MonoBehaviour {
     [Header("velocidad a la que aumenta o reduce la velocidad")]
     [Min(0)]
     public float accelerationScale;
+    private bool beforeDeadTODO;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
     void Start() {
         sMC = gameObject.GetComponent<ShipMovementController>();
         sIC = gameObject.GetComponent<StructuralIntecrityController>();
         cannon = gameObject.GetComponent<CannonController>();
+        beforeDeadTODO = true;
     }
     
     void Update(){
         if (sIC.alive) {
+            fowardRSpeed = sMC.inFowardBackwards;
             sMC.inFowardBackwards += movement.z * accelerationScale * Time.deltaTime;
             sMC.inLeftRight = movement.x;
             sMC.inUpDown = movement.y;
@@ -37,6 +42,15 @@ public class FighterController : MonoBehaviour {
             sMC.inRoll = rotation.z;
             sMC.inYaw = rotation.y;
             if (fire) {  cannon.shoot(); }
+        }
+        else if (beforeDeadTODO) {
+            sMC.inFowardBackwards = 0;
+            sMC.inLeftRight = 0;
+            sMC.inUpDown = 0;
+            sMC.inPitch = 0;
+            sMC.inRoll = 0;
+            sMC.inYaw = 0;
+            beforeDeadTODO = false;
         }
     }
 
