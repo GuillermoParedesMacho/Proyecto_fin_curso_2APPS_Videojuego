@@ -27,11 +27,14 @@ public class SensorsSystem : MonoBehaviour {
         enemys.Clear();
         
         foreach(Collider data in raw) {
-            if(data.gameObject.layer == ally) {
-                allys.Add(data.gameObject);
-            }
-            else if(data.gameObject.layer == enemy) {
-                enemys.Add(data.gameObject);
+            StructuralIntecrityController dataheal = data.GetComponent<StructuralIntecrityController>();
+            if (dataheal != null && dataheal.alive) {
+                if (data.gameObject.layer == ally) {
+                    allys.Add(data.gameObject);
+                }
+                else if (data.gameObject.layer == enemy) {
+                    enemys.Add(data.gameObject);
+                }
             }
         }
     }
