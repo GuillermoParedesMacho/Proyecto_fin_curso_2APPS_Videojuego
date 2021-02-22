@@ -61,4 +61,10 @@ public class FighterController : MonoBehaviour {
         else if (increase < -1) { increase = -1; }
         movement.z += increase;
     }
+
+    public void stop() {
+        movement = Vector3.zero;
+        rotation = Vector3.zero;
+        sMC.inFowardBackwards = 0;
+    }
 }

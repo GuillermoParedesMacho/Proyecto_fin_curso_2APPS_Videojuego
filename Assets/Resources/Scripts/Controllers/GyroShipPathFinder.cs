@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//TODO añadir un array de indentificacion de objeto a ignorar
+
 public class GyroShipPathFinder: MonoBehaviour {
     //---data--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     //Constants
     private GameObject gyro;
     private FighterController fControler;
-    [Min(0)]
-    public float rangeOfComplete;
 
     //Values
     private List<Vector3> path;
@@ -27,15 +27,15 @@ public class GyroShipPathFinder: MonoBehaviour {
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
-    public void moveToPos(GameObject pos, float rSpeed) {
+    public void moveToPos(GameObject pos, float rSpeed, float rangeOfComplete) {
         hitIgnore = pos;
-        moveToPos(pos.transform.position, rSpeed);
+        moveToPos(pos.transform.position, rSpeed, rangeOfComplete);
     }
-    public void moveToPos(Vector3 pos, float rSpeed, GameObject ignore) {
+    public void moveToPos(Vector3 pos, float rSpeed, GameObject ignore, float rangeOfComplete) {
         hitIgnore = ignore;
-        moveToPos(pos, rSpeed);
+        moveToPos(pos, rSpeed, rangeOfComplete);
     }
-    public void moveToPos(Vector3 pos, float rSpeed) {
+    public void moveToPos(Vector3 pos, float rSpeed, float rangeOfComplete) {
         gyro.transform.LookAt(pos);
         checkPath(pos);
         
@@ -46,14 +46,16 @@ public class GyroShipPathFinder: MonoBehaviour {
 
         showPath(pos);
 
-        if(Vector3.Distance(gameObject.transform.position, nextPoint) >= rangeOfComplete) {
+        if(Vector3.Distance(gameObject.transform.position, nextPoint) < rangeOfComplete + 10 && path.Count > 0) {
+            path.RemoveAt(0);
+        }
+        else if(Vector3.Distance(gameObject.transform.position, nextPoint) >= rangeOfComplete) {
             adjustTrayectory(gyro.transform.localEulerAngles);
             adjustSpeed(rSpeed);
         }
         else {
             adjustSpeed(0);
             fControler.rotation = Vector3.zero;
-            if (path.Count != 0){ path.RemoveAt(0); }
         }
         
     }
@@ -114,27 +116,31 @@ public class GyroShipPathFinder: MonoBehaviour {
         bool flag = false;
         int x = 0;
 
+        //temporal
+        Debug.DrawLine(transform.position, endPoint, Color.yellow, 5f, true);
+        GameObject[] toIgnore = new GameObject[1];
+        toIgnore[0] = hitIgnore;
+
         do {
             x++;
             tempPoint += offset;
             flag = false;
 
             //hit from prev point to new one
-            if (Physics.Linecast(prevPoint, tempPoint, out rayCastPath)) {
-                //Debug.DrawLine(prevPoint, tempPoint, Color.red, 5, true);
-                if (rayCast.transform.gameObject != hitIgnore) {
-                    if (rayCastPath.transform.gameObject != rayCastPath.transform.gameObject) {
-                        tempPoint = rayCast.point;
-                        rayCast = rayCastPath;
-                    }
+            if (Physics.Linecast(prevPoint, tempPoint - 1 * gyro.transform.forward, out rayCastPath)) {
+                if(!checkIgnore(rayCastPath.transform.gameObject, toIgnore)) { 
+                    tempPoint = rayCastPath.point;
+                    rayCast = rayCastPath;
                     flag = true;
+                    Debug.DrawLine(prevPoint, tempPoint - 1 * gyro.transform.forward, Color.yellow, 5f, true);
                 }
             }
-
+            else {
+                Debug.DrawLine(prevPoint, tempPoint - 1 * gyro.transform.forward, Color.blue, 5f, true);
+            }
             //hit from new point to end pos
-            if (Physics.Linecast(tempPoint - 1 * gyro.transform.forward, endPoint, out rayCastPath)) {
-                //Debug.DrawLine(tempPoint, endPoint, Color.red, 5, true);
-                if (rayCastPath.transform.gameObject != hitIgnore) {
+            if (Physics.Linecast(tempPoint - 1 * gyro.transform.forward, endPoint, out rayCastPath) && !flag) {
+                if (!checkIgnore(rayCastPath.transform.gameObject, toIgnore)) {
                     if (rayCast.transform.gameObject != rayCastPath.transform.gameObject) {
                         path.Add(tempPoint);
                         prevPoint = tempPoint;
@@ -142,8 +148,12 @@ public class GyroShipPathFinder: MonoBehaviour {
                         rayCast = rayCastPath;
                         offset *= -1;
                     }
-                        flag = true;
+                    flag = true;
+                    Debug.DrawLine(tempPoint - 1 * gyro.transform.forward, endPoint, Color.yellow, 5f, true);
                 }
+            }
+            else {
+                Debug.DrawLine(prevPoint - 1 * gyro.transform.forward, tempPoint, Color.blue, 5f, true);
             }
 
             if (!flag) {
@@ -157,6 +167,15 @@ public class GyroShipPathFinder: MonoBehaviour {
             }
 
         } while (flag);
+    }
+
+    private bool checkIgnore(GameObject obj, GameObject[] ignoreList) {
+        foreach(GameObject ignore in ignoreList) {
+            if(obj == ignore) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //other math stuff

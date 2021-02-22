@@ -29,6 +29,7 @@ public class UserController : MonoBehaviour {
     void Update() {
         moveCamera();
         movementSystem();
+        fireSystem();
         if (Input.GetKeyDown(KeyCode.Escape)) { menuOpciones(); }
     }
 
