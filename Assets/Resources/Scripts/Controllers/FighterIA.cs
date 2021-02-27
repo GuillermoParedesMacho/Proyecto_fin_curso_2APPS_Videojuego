@@ -16,6 +16,7 @@ public class FighterIA : MonoBehaviour {
 
     //Values
     private GameObject target;
+    public ObjetivesClass[] objetives;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
     
@@ -26,6 +27,7 @@ public class FighterIA : MonoBehaviour {
         shipHeal = gameObject.GetComponent<StructuralIntecrityController>();
 
         estado = estados.idle;
+        objetiveStarter();
     }
 
     // Update is called once per frame
@@ -87,6 +89,14 @@ public class FighterIA : MonoBehaviour {
 
     private void estadoObjetive() {
         //TODO cumplir objetivos establecidos
+        switch (objetives[0].objetivo) {
+            case ObjetivesClass.objetivos.Atack:
+                break;
+            case ObjetivesClass.objetivos.Defense:
+                break;
+            case ObjetivesClass.objetivos.Move:
+                break;
+        }
     }
 
     //-----actions--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_
@@ -130,6 +140,20 @@ public class FighterIA : MonoBehaviour {
         }
         else {
             fController.fire = false;
+        }
+    }
+
+    //objetive starter
+    private void objetiveStarter() {
+        foreach (ObjetivesClass objetive in objetives) {
+            switch (objetive.objetivo) {
+                case ObjetivesClass.objetivos.Atack:
+                    objetive.GetComponent<ObjetiveAtack>().taskedShips.Add(gameObject);
+                    break;
+                case ObjetivesClass.objetivos.Move:
+                    objetive.GetComponent<ObjetiveMove>().taskedShips.Add(gameObject);
+                    break;
+            }
         }
     }
 }

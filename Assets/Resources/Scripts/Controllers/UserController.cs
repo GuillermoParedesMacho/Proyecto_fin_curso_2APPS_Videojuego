@@ -15,6 +15,8 @@ public class UserController : MonoBehaviour {
     [Header("posicion de la camara con respecto al centro del obj")]
     public Vector3 posOffset;
 
+    public bool playerDead;
+
     private FighterController fController;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
@@ -23,6 +25,7 @@ public class UserController : MonoBehaviour {
         getcontroller();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        playerDead = false;
     }
 
     
@@ -31,6 +34,7 @@ public class UserController : MonoBehaviour {
         movementSystem();
         fireSystem();
         if (Input.GetKeyDown(KeyCode.Escape)) { menuOpciones(); }
+        playerDead = nave.GetComponent<StructuralIntecrityController>().alive;
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
