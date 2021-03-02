@@ -9,6 +9,8 @@ public class SensorsSystem : MonoBehaviour {
     private LayerMask ally;
     private LayerMask enemy;
 
+    public float range;
+
     //Values
     public List<GameObject> allys;
     public List<GameObject> enemys;
@@ -22,7 +24,7 @@ public class SensorsSystem : MonoBehaviour {
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
     
     public void scan() {
-        Collider[] raw = Physics.OverlapSphere(transform.position, 1200);
+        Collider[] raw = Physics.OverlapSphere(transform.position, range);
         allys.Clear();
         enemys.Clear();
         

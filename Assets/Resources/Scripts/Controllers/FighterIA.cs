@@ -16,7 +16,7 @@ public class FighterIA : MonoBehaviour {
 
     //Values
     private GameObject target;
-    public ObjetivesClass[] objetives;
+    public List<ObjetivesClass> objetives;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
     
@@ -58,19 +58,25 @@ public class FighterIA : MonoBehaviour {
         }
     }
 
+    private void setIdle() {
+        estado = estados.idle;
+        fController.stop();
+        fController.fire = false;
+    }
     private void estadoIdle() {
         //TODO esperar en el sistio y buscar objetivos
         if (checkSensors()) {
             estado = estados.battle;
+        }
+        else if (objetives.Count > 0) {
+            estado = estados.objetive;
         }
     }
 
     private void estadoBattle() {
         //TODO buscar, matar, aniquilar (tactica de combate principal: "bum and run")
         if (!checkSensors()) {
-            estado = estados.idle;
-            fController.stop();
-            fController.fire = false;
+            setIdle();
             return;
         }
         if (target != null) {
@@ -87,16 +93,36 @@ public class FighterIA : MonoBehaviour {
         }
     }
 
+    //sistema de cumplimiento de objetivo
     private void estadoObjetive() {
         //TODO cumplir objetivos establecidos
+        if(objetives.Count == 0 || !objetives[0].active) {
+            setIdle();
+            return;
+        }
+        if (objetives[0].victory || objetives[0].failed) {
+            objetives.RemoveAt(0);
+            return;
+        }
         switch (objetives[0].objetivo) {
             case ObjetivesClass.objetivos.Atack:
                 break;
             case ObjetivesClass.objetivos.Defense:
                 break;
             case ObjetivesClass.objetivos.Move:
+                objetiveMove();
                 break;
         }
+    }
+
+    //objetivo moverse
+    private void objetiveMove() {
+        ObjetiveMove objData = objetives[0].GetComponent<ObjetiveMove>();
+        if (checkSensors(sensor.range * 0.75f)) {
+            estado = estados.battle;
+            return;
+        }
+        pathFinder.moveToPos(objetives[0].transform.position, 0.8f, objData.distanceToComplete);
     }
 
     //-----actions--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_
@@ -107,7 +133,19 @@ public class FighterIA : MonoBehaviour {
         if (sensor.enemys.Count > 0) { return true; }
         else { return false; }
     }
-    
+
+    private bool checkSensors(float range) {
+        sensor.scan();
+        if (sensor.enemys.Count > 0) {
+            foreach(GameObject enemy in sensor.enemys) {
+                if(Vector3.Distance(transform.position, enemy.transform.position) < range) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private GameObject selectNewTarget() {
         GameObject target = null;
         foreach (GameObject enemy in sensor.enemys) {
@@ -156,4 +194,5 @@ public class FighterIA : MonoBehaviour {
             }
         }
     }
+
 }

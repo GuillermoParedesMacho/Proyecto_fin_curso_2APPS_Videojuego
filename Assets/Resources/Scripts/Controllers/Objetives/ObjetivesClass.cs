@@ -57,8 +57,8 @@ public class ObjetivesClass : MonoBehaviour {
     }
 
     private void objetiveMove() {
-        //victory = gameObject.GetComponent<ObjetiveMove>().victory;
-        //failed = gameObject.GetComponent<ObjetiveMove>().failed;
+        victory = gameObject.GetComponent<ObjetiveMove>().victory;
+        failed = gameObject.GetComponent<ObjetiveMove>().failed;
     }
 
 }
