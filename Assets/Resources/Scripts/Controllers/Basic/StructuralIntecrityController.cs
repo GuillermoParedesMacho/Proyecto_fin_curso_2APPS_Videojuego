@@ -6,12 +6,18 @@ public class StructuralIntecrityController : MonoBehaviour{
     //---data--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     //Constants
-    
-    private float maxHeal;
+    [HideInInspector]
+    public float maxHeal;
     private float maxArmour;
     private float maxArmourPiercingFactor;
 
+    public GameObject[] indicators;
+    public GameObject[] objToDesactive;
+    public GameObject[] objToActivate;
+    public AudioSource dethSound;
+
     //Values
+    private float nextObjTimer;
 
     [HideInInspector]
     public bool alive;
@@ -28,6 +34,13 @@ public class StructuralIntecrityController : MonoBehaviour{
         maxArmour = armour;
         maxArmourPiercingFactor = 1;
         alive = true;
+        nextObjTimer = 1;
+    }
+
+    private void Update() {
+        if (!alive) {
+            //TODO temporizar salida del siguiente elemento
+        }
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
@@ -49,9 +62,37 @@ public class StructuralIntecrityController : MonoBehaviour{
         Debug.Log(hitter.name + " hitted " + gameObject.name + " dealing " + damage + " damage");
     }
 
-    public void healUpdate() {
-        //update values dependent of heal
-        if(heal <= 0) { alive = false; }
+    public void instakill() {
+        heal = -1;
+        healUpdate();
     }
 
+    public void healUpdate() {
+        //update values dependent of heal
+        if(heal <= 0) {
+            deactiveIndicators();
+            foreach (GameObject desactive in objToDesactive) {
+                if(desactive != null) {
+                    desactive.SetActive(false);
+                }
+            }
+            foreach (GameObject active in objToActivate) {
+                if (active != null) {
+                    active.SetActive(true);
+                }
+            }
+            if(dethSound != null) {
+                dethSound.Play();
+            }
+            alive = false;
+        }
+    }
+
+    public void deactiveIndicators() {
+        foreach (GameObject desactive in indicators) {
+            if (desactive != null) {
+                desactive.SetActive(false);
+            }
+        }
+    }
 }

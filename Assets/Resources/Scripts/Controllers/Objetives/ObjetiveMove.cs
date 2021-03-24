@@ -8,7 +8,7 @@ public class ObjetiveMove: MonoBehaviour {
     //Constants
 
     //Values
-    [HideInInspector]
+    //[HideInInspector]
     public bool victory;
     [HideInInspector]
     public bool failed;
@@ -46,9 +46,13 @@ public class ObjetiveMove: MonoBehaviour {
     private bool checkVictory() {
         //si todos mueren, victoria
         foreach (GameObject taskedShip in taskedShips) {
-            if (Vector3.Distance(transform.position, taskedShip.transform.position) > distanceToComplete) { return false; }
+            if (Vector3.Distance(transform.position, taskedShip.transform.position) > distanceToComplete && taskedShip.GetComponent<StructuralIntecrityController>().alive) { return false; }
         }
-        return true;
+        if(taskedShips.Count == 0) { return false; }
+        foreach (GameObject taskedShip in taskedShips) {
+            if (taskedShip.GetComponent<StructuralIntecrityController>().alive) { return true; }
+        }
+        return false;
     }
 
     private bool countdown() {

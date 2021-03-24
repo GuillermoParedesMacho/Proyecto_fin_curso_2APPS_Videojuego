@@ -45,7 +45,12 @@ public class ObjetiveAtack : MonoBehaviour {
     private bool checkVictory() {
         //si todos mueren, victoria
         foreach (GameObject target in targets) {
-            if (target.GetComponent<StructuralIntecrityController>().alive) { return false; }
+            if (target.GetComponent<StructuralIntecrityController>() != null) {
+                if (target.GetComponent<StructuralIntecrityController>().alive) { return false; }
+            }
+            else {
+                return false;
+            }
         }
         return true;
     }
@@ -58,7 +63,12 @@ public class ObjetiveAtack : MonoBehaviour {
 
     private bool checkTaskedShips() {
         foreach (GameObject taskedShip in taskedShips) {
-            if (taskedShip.GetComponent<StructuralIntecrityController>().alive) { return false; }
+            if (taskedShip.GetComponent<StructuralIntecrityController>() != null) {
+                if (taskedShip.GetComponent<StructuralIntecrityController>().alive) { return false; }
+            }
+            else {
+                return false;
+            }
         }
         return true;
     }

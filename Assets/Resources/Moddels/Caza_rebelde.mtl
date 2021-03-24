@@ -1,0 +1,12 @@
+newmtl aiStandardSurface8
+Kd 0.4934186 0.3059107 0.1334299
+d 1
+
+newmtl aiStandardSurface1
+Kd 0.3134634 0.2892613 0.3264041
+d 0
+
+newmtl aiStandardSurface9
+Kd 0.3944328 0.2407688 0.09941966
+d 1
+

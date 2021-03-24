@@ -1,11 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UserController : MonoBehaviour {
     //---data--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     //Constants
+    public Image healBar;
+    public Image speedBar;
+    public GameObject fowardImage;
+    public GameObject bacwardImage;
+    public GameObject victory;
+    public GameObject defeat;
+    public GameObject turnback;
 
     //Values
     [Header("menu de los ajustes")]
@@ -18,29 +27,89 @@ public class UserController : MonoBehaviour {
     public bool playerDead;
 
     private FighterController fController;
+    private float timeToRespawn;
+    private float movingToPos;
+    private Vector3 startPoint;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     void Start() {
-        getcontroller();
+        timeToRespawn = 1;
+        movingToPos = 1;
+        startPoint = transform.position;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        Time.timeScale = 1;
         playerDead = false;
+        healBar.fillAmount = 0;
+        speedBar.fillAmount = 0;
+        fowardImage.SetActive(false);
+        bacwardImage.SetActive(false);
     }
 
     
     void Update() {
-        moveCamera();
-        movementSystem();
-        fireSystem();
+        if (nave.GetComponent<StructuralIntecrityController>().alive && movingToPos <= 0) {
+            moveCamera();
+            movementSystem();
+            fireSystem();
+            updateUHD();
+        }
+        else if(movingToPos > 0) {
+            if(timeToRespawn <= 0) {
+                respawn();
+            }
+            else {
+                timeToRespawn -= Time.deltaTime;
+            }
+        }
+        else {
+            searchNewHost();
+            healBar.fillAmount = 0;
+            speedBar.fillAmount = 0;
+            fowardImage.SetActive(false);
+            bacwardImage.SetActive(false);
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape)) { menuOpciones(); }
-        playerDead = nave.GetComponent<StructuralIntecrityController>().alive;
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
+    private void searchNewHost() {
+        SensorsSystem sensor = nave.GetComponent<SensorsSystem>();
+        sensor.scan();
+        if(sensor.allys.Count > 0) {
+            foreach(GameObject possibleNave in sensor.allys) {
+                if (possibleNave.GetComponent<StructuralIntecrityController>().alive) {
+                    nave = possibleNave;
+                    timeToRespawn = 3;
+                    movingToPos = 1;
+                    startPoint = transform.position;
+                }
+            }
+            playerDead = false;
+        }
+        else {
+            playerDead = true;
+        }
+    }
+
+    private void respawn() {
+        gameObject.transform.LookAt(nave.transform.position);
+        Vector3 v3Distance = nave.transform.position - startPoint;
+        transform.position = startPoint + v3Distance * (1 - movingToPos);
+        movingToPos -= (Time.deltaTime / 3);
+        if(movingToPos <= 0) {
+            getcontroller();
+        }
+    }
+
     private void getcontroller() {
         fController = nave.GetComponent<FighterController>();
+        nave.GetComponent<StructuralIntecrityController>().deactiveIndicators();
+        nave.GetComponent<FighterIA>().enabled = false;
+        nave.GetComponent<GyroShipPathFinder>().enabled = false;
     }
 
     private void moveCamera() {
@@ -72,18 +141,54 @@ public class UserController : MonoBehaviour {
         else { fController.fire = false; }
     }
 
-    private void menuOpciones() {
-        if (menuDeOpciones.active) {
-            menuDeOpciones.SetActive(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            Time.timeScale = 1;
+    public void menuOpciones() {
+        if(menuDeOpciones != null) {
+            if (menuDeOpciones.activeSelf) {
+                menuDeOpciones.SetActive(false);
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                Time.timeScale = 1;
+            }
+            else {
+                menuDeOpciones.SetActive(true);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                Time.timeScale = 0;
+            }
         }
         else {
-            menuDeOpciones.SetActive(true);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            Time.timeScale = 0.2f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("MainMenu");
         }
+    }
+
+    private void updateUHD() {
+        StructuralIntecrityController sIC = fController.GetComponent<StructuralIntecrityController>();
+        healBar.fillAmount = sIC.heal / sIC.maxHeal;
+
+        float speed = fController.GetComponent<ShipMovementController>().inFowardBackwards;
+        fowardImage.SetActive(speed > 0);
+        bacwardImage.SetActive(speed < 0);
+        if (speed < 0) { speed = speed * -1; }
+        speedBar.fillAmount = speed;
+    }
+
+    public void victoryMenu() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 0;
+        victory.SetActive(true);
+    }
+
+    public void defeatMenu() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 0;
+        defeat.SetActive(true);
+    }
+
+    public void turnBackIndicator(bool active) {
+        defeat.SetActive(active);
     }
 }

@@ -40,9 +40,13 @@ public class ObjetiveDefense : MonoBehaviour {
     private bool checkFail() {
         //si todos mueren, se pierde
         foreach (GameObject target in targets) {
-            if (target.GetComponent<StructuralIntecrityController>().alive) {
+            if(target.GetComponent<StructuralIntecrityController>() != null) {
+                if (target.GetComponent<StructuralIntecrityController>().alive) { return false; }
+            }
+            else {
                 return false;
             }
+            
         }
         return true;
     }

@@ -14,8 +14,10 @@ public class FighterIA : MonoBehaviour {
     public enum estados { idle, battle, objetive };
     public estados estado;
 
+    public float attackRange;
+
     //Values
-    private GameObject target;
+    public GameObject target;
     public List<ObjetivesClass> objetives;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
@@ -80,8 +82,9 @@ public class FighterIA : MonoBehaviour {
             return;
         }
         if (target != null) {
-            pathFinder.moveToPos(target, 1, 0);
-            fireCannons(target.transform.position);
+            Vector3 pos = PhishicsMath.properAimPos(target, Vector3.Distance(transform.position, target.transform.position), gameObject.GetComponent<CannonController>().bulletspeed);
+            pathFinder.moveToPos(pos, 1, target ,0);
+            fireCannons(pos);
 
             if (!target.GetComponent<StructuralIntecrityController>().alive) {
                 target = null;
@@ -106,8 +109,10 @@ public class FighterIA : MonoBehaviour {
         }
         switch (objetives[0].objetivo) {
             case ObjetivesClass.objetivos.Atack:
+                objetiveAttack();
                 break;
             case ObjetivesClass.objetivos.Defense:
+                objetiveDefense();
                 break;
             case ObjetivesClass.objetivos.Move:
                 objetiveMove();
@@ -118,11 +123,33 @@ public class FighterIA : MonoBehaviour {
     //objetivo moverse
     private void objetiveMove() {
         ObjetiveMove objData = objetives[0].GetComponent<ObjetiveMove>();
-        if (checkSensors(sensor.range * 0.75f)) {
+        if (checkSensors(attackRange * 1.2f)) {
             estado = estados.battle;
             return;
         }
         pathFinder.moveToPos(objetives[0].transform.position, 0.8f, objData.distanceToComplete);
+    }
+
+    //objetivo atacar
+    private void objetiveAttack() {
+        //TODO realizar que se asigne los objetivos de ataque al target
+        ObjetiveAtack objData = objetives[0].GetComponent<ObjetiveAtack>();
+        if (checkSensors()) {
+            estado = estados.battle;
+            return;
+        }
+        pathFinder.moveToPos(objData.targets[0], 1, 50);
+    }
+
+    //objetivo defender
+    private void objetiveDefense() {
+        //TODO revisar
+        ObjetiveDefense objData = objetives[0].GetComponent<ObjetiveDefense>();
+        if (checkSensors(attackRange * 1.7f)) {
+            estado = estados.battle;
+            return;
+        }
+        pathFinder.moveToPos(objData.targets[0], 1, 50);
     }
 
     //-----actions--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_
@@ -173,7 +200,7 @@ public class FighterIA : MonoBehaviour {
         Vector2 shipGlovalAngle = PhishicsMath.V3relativePosToV2ang((transform.position + 10 * transform.forward) - transform.position);
         angles -= shipGlovalAngle;
 
-        if (Vector3.Distance(transform.position, target) < 500 && (angles.x < 5 && angles.x > -5) && (angles.y < 5 && angles.y > -5)) {
+        if (Vector3.Distance(transform.position, target) < attackRange && (angles.x < 5 && angles.x > -5) && (angles.y < 5 && angles.y > -5)) {
             fController.fire = true;
         }
         else {
@@ -185,11 +212,11 @@ public class FighterIA : MonoBehaviour {
     private void objetiveStarter() {
         foreach (ObjetivesClass objetive in objetives) {
             switch (objetive.objetivo) {
-                case ObjetivesClass.objetivos.Atack:
-                    objetive.GetComponent<ObjetiveAtack>().taskedShips.Add(gameObject);
-                    break;
                 case ObjetivesClass.objetivos.Move:
                     objetive.GetComponent<ObjetiveMove>().taskedShips.Add(gameObject);
+                    break;
+                case ObjetivesClass.objetivos.Atack:
+                    objetive.GetComponent<ObjetiveAtack>().taskedShips.Add(gameObject);
                     break;
             }
         }

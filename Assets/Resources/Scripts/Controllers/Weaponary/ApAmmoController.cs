@@ -14,6 +14,8 @@ public class ApAmmoController : MonoBehaviour {
     [Header("opciones sobre el daño que puede hacer la vala")]
     public float damage;
     public float ap;
+    [Header("Hit indicator sample")]
+    public GameObject hitIndicatorSample;
 
     [HideInInspector]
     public GameObject launcher;
@@ -23,8 +25,7 @@ public class ApAmmoController : MonoBehaviour {
 
     //Values
     private float timeOfLife;
-    private RaycastHit rayCast;
-    private bool hit;
+    private bool collision;
 
     //---main scripr--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
@@ -32,51 +33,61 @@ public class ApAmmoController : MonoBehaviour {
         rBody = gameObject.GetComponent<Rigidbody>();
         bulletSpeed = PhishicsMath.msToNewtowns(bulletSpeedMs, rBody.mass, 0);
         launcherRgbody = launcher.GetComponent<Rigidbody>();
-    }
-
-    private void Start() {
-        
+        hitIndicatorSample.SetActive(false);
     }
 
     private void OnEnable() {
-        rBody.velocity = launcherRgbody.velocity + transform.forward * bulletSpeed;
+        rBody.velocity = transform.forward * bulletSpeed;
+        if(launcherRgbody != null) {
+            rBody.velocity += launcherRgbody.velocity;
+        }
         //rBody.AddForce();
         timeOfLife = lifeTime;
-        hit = false;
     }
 
     private void Update() {
         timeOfLife -= Time.deltaTime;
-        if(timeOfLife < 0 || hit) {
-            rBody.velocity = Vector3.zero;
-            rBody.angularVelocity = Vector3.zero;
-            gameObject.SetActive(false);
+        if(timeOfLife < 0) {
+            end();
         }
         float distance = PhishicsMath.distanceTraveled(rBody.velocity, Time.deltaTime);
-        checkHit(transform.forward * -1, distance*3);
+        //checkHit(transform.forward * -1, distance * 3);
+        checkHit(transform.forward, distance * 3);
     }
 
     //---functions--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--
 
     private void checkHit (Vector3 direction,float distance) {
-        if (Physics.Raycast(transform.position, direction, out rayCast, distance)) {
-            GameObject hitted = rayCast.transform.gameObject;
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(transform.position, direction, distance);
+        
+        foreach(RaycastHit hit in hits) {
+            GameObject hitted = hit.transform.gameObject;
             if (hitted != launcher) {
                 StructuralIntecrityController siController = hitted.GetComponent<StructuralIntecrityController>();
                 if (siController != null) {
                     siController.damage(damage, ap, launcher);
-                    //moveToProperHitpoint(direction, distance);
-                    
+                    endWithPasion(hit);
+                    return;
                 }
-                hit = true;
             }
+        }
+        if(hits.Length > 0) {
+            endWithPasion(hits[0]);
         }
     }
 
-    private void moveToProperHitpoint(Vector3 direction, float distance) {
-        transform.Translate(direction * distance);
-        if (Physics.Raycast(transform.position, direction * -1, out rayCast, distance)) {
-            transform.position = rayCast.point;
-        }
+    private void endWithPasion(RaycastHit hit) {
+        GameObject instantiate = Instantiate(hitIndicatorSample);
+        instantiate.transform.position = hit.point;
+        instantiate.transform.eulerAngles = gameObject.transform.eulerAngles;
+        instantiate.SetActive(true);
+        end();
+    }
+
+    private void end() {
+        rBody.velocity = Vector3.zero;
+        rBody.angularVelocity = Vector3.zero;
+        gameObject.SetActive(false);
     }
 }
